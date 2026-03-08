@@ -4,11 +4,11 @@
 
 // Screen dimensions
 const SCREEN_WIDTH = 320;
-const SCREEN_HEIGHT = 528; // Updated based on requirements
+const SCREEN_HEIGHT = 256;
 
 // Simulation grid dimensions
 const GRID_WIDTH = 160;
-const GRID_HEIGHT = 264; // SCREEN_HEIGHT / 2
+const GRID_HEIGHT = 128;
 const PIXEL_SIZE = 2; // Each cell is 2x2 pixels
 
 // Particle types
@@ -280,7 +280,10 @@ function swap(x1, y1, x2, y2) {
 
 // --- VRAM and Canvas Rendering ---
 
-const vram = new Uint16Array(SCREEN_WIDTH * SCREEN_HEIGHT);
+let lcdWidth = 320;
+let lcdHeight = 528;
+
+const vram = new Uint16Array(lcdWidth * lcdHeight);
 let canvas, ctx, imageData, buf32;
 
 function initRenderer(width, height) {
@@ -894,9 +897,6 @@ function simulate() {
 
 // --- Rendering & UI ---
 
-let lcdWidth = SCREEN_WIDTH;
-let lcdHeight = SCREEN_HEIGHT;
-
 let currentFPS = 0.0;
 let frameTimes = new Array(FPS_SAMPLE_COUNT).fill(16667);
 let frameIndex = 0;
@@ -1316,7 +1316,9 @@ function drawGrid() {
   dirty.fill(0);
 
   const UI_Y = SCREEN_HEIGHT - UI_HEIGHT;
-  for (let row = UI_Y; row < SCREEN_HEIGHT; row++) {
+
+  // Clear everything from bottom of simulation to the bottom of the screen
+  for (let row = UI_Y; row < lcdHeight; row++) {
     for (let col = 0; col < lcdWidth; col++) {
       vram[row * lcdWidth + col] = 0;
     }
@@ -1742,7 +1744,7 @@ function mainLoop() {
 
 // Entry point
 window.onload = function() {
-  initRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
+  initRenderer(lcdWidth, lcdHeight);
   initSettings();
   initGrid();
   initInput();
