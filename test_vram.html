@@ -1,0 +1,13 @@
+<canvas id="c" width="2" height="2"></canvas>
+<script>
+    let c = document.getElementById('c');
+    let ctx = c.getContext('2d');
+    let d = ctx.createImageData(2, 2);
+    let buf32 = new Uint32Array(d.data.buffer);
+
+    // Test endianness by writing ABGR order (if little-endian)
+    let r = 255, g = 0, b = 0;
+    buf32[0] = (255 << 24) | (b << 16) | (g << 8) | r;
+    ctx.putImageData(d, 0, 0);
+    console.log(ctx.getImageData(0,0,1,1).data);
+</script>
